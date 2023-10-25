@@ -2,26 +2,34 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# Laad producten in via CSV (wordt database, lijkt mij)
-df = pd.read_csv('products.csv', encoding='latin-1', sep=',')
 
-# Simpele data voorverwerking
-df = df[['Handle', 'Title', 'Tags', 'Body (HTML)']]
-df = df.dropna()
-df = df.set_index('Handle')
+def get_dataframe_from_products(products=None):
+    if products:
+        products_data = [{"Handle": p["node"]["handle"], "Title": p["node"]["title"], "Tags": " ".join(p["node"]["tags"]), "Body (HTML)": p["node"]["description"]} for p in products]
+        df = pd.DataFrame(products_data)
+        df = df.set_index('Handle')
+        print("DE GOEDE DATAFRAME")
+    else:
+        df = pd.read_csv('products.csv', encoding='latin-1', sep=',')
+        df = df[['Handle', 'Title', 'Tags', 'Body (HTML)']]
+        df = df.dropna()
+        df = df.set_index('Handle')
+        print("DE SLECHTE DATAFRAME")
+    
+    # Combine tags and body into a new column named Features
+    df['Features'] = df['Tags'] + ' ' + df['Body (HTML)']
 
-# Voeg zowel tags als body samen in een nieuwe kolom genaamd Features
-df['Features'] = df['Tags'] + ' ' + df['Body (HTML)']
+    # TF-IDF matrix
+    tfidf = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = tfidf.fit_transform(df['Features'])
 
-# TF-IDF matrix dingen - zie https://en.wikipedia.org/wiki/Tf%E2%80%93idf
-tfidf = TfidfVectorizer(stop_words='english')
-tfidf_matrix = tfidf.fit_transform(df['Features'])
+    # Cosine similarity matrix
+    cosine_sim = cosine_similarity(tfidf_matrix)
 
-# Cosinus vergelijkings matrix
-cosine_sim = cosine_similarity(tfidf_matrix)
+    return df, cosine_sim
 
-# Functie om aanbevelingen te genereren
-def get_recommendations(title, cosine_sim=cosine_sim, df=df, num_recs=15, weight_factor=0.5):
+def get_recommendations(title, products=None, num_recs=15, weight_factor=0.5):
+    df, cosine_sim = get_dataframe_from_products(products)
     # Krijg de index van het product dat overeenkomt met de titel
     idx = df.index.get_loc(title)
 
@@ -50,14 +58,19 @@ def get_recommendations(title, cosine_sim=cosine_sim, df=df, num_recs=15, weight
     recommendations = []
     for i in range(len(product_indices)):
         recommendation = {}
-        recommendation['product_title'] = df.iloc[product_indices[i]]['Title']
+        recommendation['product_handle'] = df.index[product_indices[i]]
         recommendation['similarity_score'] = similarity_scores[i]
         recommendations.append(recommendation)
 
     # Return de top 5 meest overeenkomende producten en hun scores
-    return [recommendations[i]['product_title'] for i in range(len(recommendations))], similarity_scores
+    return [recommendations[i]['product_handle'] for i in range(len(recommendations))], similarity_scores
 
 # Testfunctionaliteit
 # recs, scores = get_recommendations('red-sports-tee', num_recs=4)
 # print(recs)
 # print(scores)
+
+
+
+
+
