@@ -2,13 +2,12 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-
 def get_dataframe_from_products(products=None):
     if products:
-        products_data = [{"Handle": p["node"]["handle"], "Title": p["node"]["title"], "Tags": " ".join(p["node"]["tags"]), "Body (HTML)": p["node"]["description"]} for p in products]
+        print("DE GOEDE DATAFRAME")
+        products_data = [{"Handle": p[0], "Title": p[1], "Tags": " ".join(p[4]), "Body (HTML)": p[2]} for p in products]
         df = pd.DataFrame(products_data)
         df = df.set_index('Handle')
-        print("DE GOEDE DATAFRAME")
     else:
         df = pd.read_csv('products.csv', encoding='latin-1', sep=',')
         df = df[['Handle', 'Title', 'Tags', 'Body (HTML)']]
