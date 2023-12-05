@@ -44,7 +44,7 @@ http://localhost:5137/api/recommendation/<product_handle>/<num_recs>
 Vervang `<product_handle>` met de identificatie van het product waarvoor je aanbevelingen wilt ontvangen en `<num_recs>` met het aantal aanbevelingen dat je wilt ontvangen.
 
 ## Licentie 📜
-De licentie voor dit project zal later worden toegevoegd. Vermelding van de auteur is verplicht.
+Dit project is gelicenseerd onder de CC BY-NC-SA 4.0 licentie - zie de [LICENSE](LICENSE) bestand voor details.
 
 ## Bijdragen 👥
 Ik accepteer geen bijdragen aan dit project op dit moment. 
