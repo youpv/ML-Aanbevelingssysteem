@@ -3,6 +3,7 @@
 ## Inleiding 🚀
 Dit project is een machine learning aanbevelingssysteem dat gebruikmaakt van Flask om een API te bieden. Het systeem is ontworpen om productaanbevelingen te doen op basis van productgegevens (content-based filtering).
 Het systeem is ontworpen om te worden gebruikt met het [Shopify](https://www.shopify.com/) e-commerce platform 🛍️. Het systeem is echter niet afhankelijk van Shopify en kan worden gebruikt met andere e-commerce platforms.
+> **⚠️** Andere e-commerce platforms vereisen mogelijk een andere implementatie van productgegevens. De huidige implementatie is specifiek voor Shopify.
 
 ## Opmerkingen 📝
 - Dit project is nog in ontwikkeling en is nog niet klaar voor productie. In de toekomst wordt het systeem uitgebreid met collaborative filtering en feedback loops.
