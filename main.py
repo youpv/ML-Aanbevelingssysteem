@@ -1,59 +1,48 @@
 from dotenv import load_dotenv
-load_dotenv() 
+load_dotenv()
+import os
 import psycopg2
 from flask import Flask, jsonify, g
 from flask_cors import CORS
-from recommendations import get_recommendations, get_dataframe_from_products
-import os
+from recommendations import get_recommendations
 
-
-# Zorg meteen voor CORS support
+# Initialize Flask application with CORS support
 app = Flask(__name__)
 CORS(app)
-print(os.getenv("DATABASE_URL"))
 
 def get_db():
+    """Establish a database connection."""
     if 'db' not in g:
         g.db = psycopg2.connect(os.getenv("DATABASE_URL"))
     return g.db
 
 @app.teardown_appcontext
-def close_db(e=None):
-    # close the database connection if it exists
+def close_db(exception=None):
+    """Close the database connection."""
     db = g.pop('db', None)
     if db is not None:
         db.close()
 
 def fetch_all_products():
-    # fetch all products from the database
+    """Fetch all products from the database."""
     db = get_db()
-    cur = db.cursor()
-    cur.execute("SELECT * FROM products")
-    rows = cur.fetchall()
-    cur.close()
-    return rows
+    with db.cursor() as cur:
+        cur.execute("SELECT * FROM products")
+        return cur.fetchall()
 
+# Fetch all products at the start
 with app.app_context():
     all_products = fetch_all_products()
 
-
-# Beide routes aanmaken zodat je zowel los een product als product met aantal aanbevelingen kan opvragen
 @app.route("/api/recommendation/<string:product_handle>", methods=["GET"])
 @app.route("/api/recommendation/<string:product_handle>/<int:num_recs>", methods=["GET"])
-# Functie om aanbevelingen op te vragen
-def get_recommendation(product_handle, num_recs=999999999):
+def get_recommendation(product_handle, num_recs=99999):
+    """API endpoint to get product recommendations."""
     try:
-        # Krijg aanbevelingen
         recommendations = get_recommendations(product_handle, products=all_products, num_recs=num_recs)
-        # return aanbevelingen als JSON
-        return jsonify({
-            'active_product': product_handle,
-            'recommendations': recommendations
-        })
+        return jsonify({'active_product': product_handle, 'recommendations': recommendations})
     except Exception as e:
-        return jsonify({
-            'error': str(e)
-        }), 500
-    
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True, port=5137)
