@@ -13,7 +13,7 @@ Het systeem is ontworpen om te worden gebruikt met het [Shopify](https://www.sho
 
 1. **Kloon de Repository** 👨‍💻
    ```
-   git clone https://github.com/youpv/Python.git
+   git clone https://github.com/youpv/ML-Aanbevelingssysteem.git
    cd Python
    ```
 
