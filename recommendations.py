@@ -37,8 +37,3 @@ def get_recommendations(handle, products=None, num_recs=99999, weight_factor=0.5
 
     recommendations = [{'product_handle': df.index[i[0]], 'similarity_score': i[1]} for i in sorted_scores]
     return [r['product_handle'] for r in recommendations], [r['similarity_score'] for r in recommendations]
-
-# Test functionality
-# recs, scores = get_recommendations('red-sports-tee', num_recs=4)
-# print(recs)
-# print(scores)
