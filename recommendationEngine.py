@@ -5,7 +5,7 @@ from surprise import SVD, Dataset, Reader
 
 
 def get_dataframe_from_products(products):
-    """Create a dataframe from product data."""
+    """Creëer een dataframe van productdata."""
     data = [{"Handle": p[0], "Title": p[1], "Tags": " ".join(p[4]), "Body": p[2]} for p in products]
     df = pd.DataFrame(data).set_index('Handle')
     df['Features'] = df['Tags'] + ' ' + df['Body']
@@ -13,14 +13,14 @@ def get_dataframe_from_products(products):
 
 
 def calculate_similarity(df, column_name):
-    """Calculate similarity scores for a given column."""
+    """Bereken cosine overeenkomst voor gegeven kolom."""
     tfidf = TfidfVectorizer(stop_words='english')
     tfidf_matrix = tfidf.fit_transform(df[column_name])
     return cosine_similarity(tfidf_matrix)
 
 
 def get_content_based_recs(df_products, product_idx, cosine_sim_body, cosine_sim_tags, weight_factor, handle):
-    """Get content-based recommendations with weighted scores, excluding the product itself."""
+    """Krijg content-based aanbevelingen met gewogen scores, exclusief het product zelf."""
     content_scores = [
         (df_products.index[i], weight_factor * cosine_sim_tags[product_idx][i] + (1 - weight_factor) * cosine_sim_body[product_idx][i]) 
         for i in range(len(df_products)) if df_products.index[i] != handle
@@ -29,7 +29,7 @@ def get_content_based_recs(df_products, product_idx, cosine_sim_body, cosine_sim
 
 
 def parse_line_items(order_data):
-    """Parse the line items from the order data."""
+    """Parse de line items uit de order data."""
     product_combinations_map = {}
 
     for order in order_data:
@@ -49,7 +49,7 @@ def parse_line_items(order_data):
 
 
 def collaborative_filtering(product_combinations_map):
-    """Implement collaborative filtering based on product combinations."""
+    """Implementeer collaborative filtering op basis van productcombinaties."""
     data = []
     for product_handle, combinations in product_combinations_map.items():
         for other_handle, count in combinations.items():
@@ -64,7 +64,7 @@ def collaborative_filtering(product_combinations_map):
 
 
 def get_collaborative_recs(svd_model, product_handle, products):
-    """Get collaborative filtering recommendations."""
+    """Krijg aanbevelingen met collaborative filtering."""
     product_handles = [p for p in products if p != product_handle]
     predictions = [svd_model.predict(product_handle, other_handle) for other_handle in product_handles]
     return [(pred.iid, pred.est) for pred in predictions]

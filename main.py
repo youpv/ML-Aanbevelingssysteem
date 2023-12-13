@@ -7,46 +7,45 @@ from flask_cors import CORS
 from recommendations import get_recommendations
 from recommendationEngine import get_recommendations_please
 
-# Initialize Flask application with CORS support
+
 app = Flask(__name__)
 CORS(app)
 
 def get_db():
-    """Establish a database connection."""
+    """Verbind met de database."""
     if 'db' not in g:
         g.db = psycopg2.connect(os.getenv("DATABASE_URL"))
     return g.db
 
 @app.teardown_appcontext
 def close_db(exception=None):
-    """Close the database connection."""
+    """Sluit de database connectie."""
     db = g.pop('db', None)
     if db is not None:
         db.close()
 
 def fetch_all_products():
-    """Fetch all products from the database."""
+    """Fetch alle producten van de database."""
     db = get_db()
     with db.cursor() as cur:
         cur.execute("SELECT * FROM products")
         return cur.fetchall()
     
 def fetch_all_orders():
-    """Fetch all orders from the database."""
+    """Fetch alle orders van de database."""
     db = get_db()
     with db.cursor() as cur:
         cur.execute("SELECT * FROM orders")
         return cur.fetchall()
 
-# Fetch all products and orders at the start
 with app.app_context():
+    """Fetch alle data bij de start van de applicatie."""
     all_products = fetch_all_products()
     all_orders = fetch_all_orders()
 
 @app.route("/api/recommendation/<string:product_handle>", methods=["GET"])
 @app.route("/api/recommendation/<string:product_handle>/<int:num_recs>", methods=["GET"])
 @app.route("/api/recommendation/<string:product_handle>/<int:num_recs>/<string:customer_id>", methods=["GET"])
-# voeg hier dadelijk na het eten ook een optie toe om de gebruiker ID mee te geven.
 def get_recommendation(product_handle, num_recs=99999, customer_id=None):
     """API endpoint to get product recommendations."""
     try:
