@@ -4,7 +4,7 @@ import os
 import psycopg2
 from flask import Flask, jsonify, g
 from flask_cors import CORS
-from recommendations import get_recommendations
+# from OUD_recommendations import get_recommendations
 from recommendationEngine import get_recommendations_please
 
 
