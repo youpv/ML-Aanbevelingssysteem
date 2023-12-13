@@ -1,13 +1,13 @@
 # Machine Learning Aanbevelingssysteem 🧠
 
 ## Inleiding 🚀
-Dit project is een machine learning aanbevelingssysteem dat gebruikmaakt van Flask om een API te bieden. Het systeem is ontworpen om productaanbevelingen te doen op basis van productgegevens (content-based filtering).
+Dit project is een machine learning aanbevelingssysteem dat gebruikmaakt van Flask om een API te bieden. Het systeem is ontworpen om productaanbevelingen te doen op basis van productgegevens (content-based filtering) en orderdata (collaborative filtering).
 Het systeem is ontworpen om te worden gebruikt met het [Shopify](https://www.shopify.com/) e-commerce platform 🛍️. Het systeem is echter niet afhankelijk van Shopify en kan worden gebruikt met andere e-commerce platforms.
-> **⚠️** Andere e-commerce platforms vereisen mogelijk een andere implementatie van productgegevens. De huidige implementatie is specifiek voor Shopify.
+> **⚠️** Andere e-commerce platforms vereisen mogelijk een andere implementatie van product- en bestelgegevens. De huidige implementatie is specifiek voor Shopify.
 
 ## Opmerkingen 📝
-- Dit project is nog in ontwikkeling en is nog niet klaar voor productie. In de toekomst wordt het systeem uitgebreid met collaborative filtering en feedback loops.
-- Het bestand `product_data.csv` bevat productgegevens van Shopify. De gegevens worden ingeladen als fallback wanneer er geen verbinding kan worden gemaakt met de database.
+- Dit project is nog in ontwikkeling. Mogelijk ontbreken er nog functies die met doorontwikkeling worden toegevoegd.
+- Het bestand `product_data.csv` bevat productgegevens van Shopify. De gegevens worden ingeladen als fallback wanneer er geen verbinding kan worden gemaakt met de database. De fallback is uit de nieuwe engine-code gehaald.
 
 ## Installatie 💾
 
@@ -39,9 +39,10 @@ Het systeem is ontworpen om te worden gebruikt met het [Shopify](https://www.sho
 ## Gebruik 📋
 De API biedt endpoints om aanbevelingen te krijgen voor producten. Gebruik de volgende URL om aanbevelingen te vragen:
 ```
-http://localhost:5137/api/recommendation/<product_handle>/<num_recs>
+http://localhost:5137/api/recommendation/<product_handle>/<num_recs>/<customer_id>
 ```
-Vervang `<product_handle>` met de identificatie van het product waarvoor je aanbevelingen wilt ontvangen en `<num_recs>` met het aantal aanbevelingen dat je wilt ontvangen.
+Vervang `<product_handle>` met de identificatie van het product waarvoor je aanbevelingen wilt ontvangen, `<num_recs>` met het aantal aanbevelingen dat je wilt ontvangen en `<customer_id>` met de identificatie van de klant die de aanbevelingen ontvangt.
+Hierbij is `<num_recs>` en `<customer_id>` optioneel. Als je geen waarde voor `<num_recs>` opgeeft, wordt er hetzelfde aantal aanbevelingen gegeven als het aantal producten in de database. Als je geen waarde voor `<customer_id>` opgeeft, verandert er op dit moment niets aan de aanbevelingen. In de toekomst zal dit worden gebruikt om aanbevelingen verder te personaliseren.
 
 ## Licentie 📜
 Dit project is gelicenseerd onder de CC BY-NC-SA 4.0 licentie - zie de [LICENSE](LICENSE) bestand voor details.
